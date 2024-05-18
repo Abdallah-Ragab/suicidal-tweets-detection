@@ -46,11 +46,3 @@ class Analyzer:
     def analyze(self, posts):
         results = self.predict(posts)
         return self.label_results(results)
-
-
-
-
-if __name__ == "__main__":
-    analyzer = Analyzer()
-    posts = ["I am feeling so sad", "I am feeling happy"]
-    print(analyzer.analyze(posts))
