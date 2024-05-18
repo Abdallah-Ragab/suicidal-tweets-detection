@@ -13,9 +13,9 @@ TASK_STATUS_MAP = json.loads(open("task_status.json").read())
 
 
 class Task:
-    def __init__(self):
-        self.status = TASK_STATUS_MAP["created"]
-        self.data = {
+    def __init__(self, status=None, data=None):
+        self.status = status or TASK_STATUS_MAP["created"]
+        self.data = data or {
             "user": None,
             "tweets": None,
             "analysis": None,
@@ -37,7 +37,6 @@ class Task:
 
 class Worker:
     received_task = {}
-    task = Task()
 
     def __init__(self):
         logger.info("Initializing worker...")
@@ -49,6 +48,7 @@ class Worker:
 
     def callback(self, ch, method, properties, body):
         self.received_task = {"channel": ch, "method": method, "properties": properties, "body": body}
+        self.task = Task()
         logger.info(f"Received task: {body.decode()}")
         self.do()
         self.done()
@@ -61,13 +61,18 @@ class Worker:
 
     def do(self):
         username = self.received_task["body"].decode()
-        print(f"Received task: {task_data}")
+        print(f"Received task: {username}")
         print(self.scrape(username))
 
     def scrape(self, username):
         logger.info(f"Scraping {username}...")
-        return self.scraper.tweets(username)
-
+        result = self.scraper.tweets(username)
+        if result:
+            self.task.data["user"] = username
+            self.task.data["tweets"] = result
+            self.task.set_status("scraped")
+            return result
+        return
 
 
 
