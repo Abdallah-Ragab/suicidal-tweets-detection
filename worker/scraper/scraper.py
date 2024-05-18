@@ -12,4 +12,4 @@ class Scraper:
         try:
             return self.scraper.get_tweets(username, mode='user', number=self.tweet_limit)
         except Exception as e:
-            return str(e)
+            return False
