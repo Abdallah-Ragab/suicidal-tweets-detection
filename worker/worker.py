@@ -102,8 +102,9 @@ class Worker:
     def result(self):
         if not self.task.data["analysis"]:
             return False
+        self.task.set_status("running_3")
         potential_suicidal_tweets = [
-            tweet_id for tweet_id, tweet in enumerate(self.task.data["tweets"]) if self.task.data["analysis"][tweet_id] == 1
+            tweet_id for tweet_id, _ in enumerate(self.task.data["tweets"]) if self.task.data["analysis"][tweet_id] == 1
         ]
         pst = len(potential_suicidal_tweets)
         total = len(self.task.data["tweets"])
@@ -116,4 +117,5 @@ class Worker:
             "ps_count": pst,
             "message": message,
         }
+        self.task.set_status("success")
 
