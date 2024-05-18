@@ -1,4 +1,5 @@
 import json
+import uuid
 
 
 TASK_STATUS_MAP = json.loads(open("task_status.json").read())
@@ -6,6 +7,7 @@ TASK_STATUS_MAP = json.loads(open("task_status.json").read())
 
 class Task:
     def __init__(self, status=None, data=None):
+        self.id = uuid.uuid4()
         self.status = status or TASK_STATUS_MAP["created"]
         self.data = data or {
             "user": None,
@@ -19,12 +21,14 @@ class Task:
 
     def serialize(self):
         return json.dumps({
+            "id": self.id,
             "status": self.status,
             "data": self.data,
         })
 
-    def deserialize(self, data):
-        data = json.loads(data)
+    def deserialize(self, json_str):
+        data = json.loads(json_str)
+        self.id = data["id"]
         self.status = data["status"]
         self.data = data["data"]
 
