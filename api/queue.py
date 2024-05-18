@@ -16,7 +16,7 @@ class TaskQueue:
     def __init__(self, connection, queue_name, callback=None):
         self.name = queue_name
         self.connection = connection
-        self.channel = self.connection.channel()
+        self.channel = self.connection.channel
         self.channel.queue_declare(queue=queue_name, durable=True)
         if callback:
             self.channel.basic_consume(queue=queue_name, on_message_callback=callback)
