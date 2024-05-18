@@ -51,6 +51,7 @@ class Worker:
     def callback(self, ch, method, properties, body):
         self.received_task = {"channel": ch, "method": method, "properties": properties, "body": body}
         self.task = Task()
+        self.task.set_status("scheduled")
         logger.info(f"Received task: {body.decode()}")
         self.do()
         self.done()
