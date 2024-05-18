@@ -9,11 +9,35 @@ import logging
 logger = logging.getLogger()
 
 TASK_QUEUE_NAME = "tasks"
-TAST_STATUS_MAP = json.loads(open("task_status.json").read())
+TASK_STATUS_MAP = json.loads(open("task_status.json").read())
+
+
+class Task:
+    def __init__(self):
+        self.status = TASK_STATUS_MAP["created"]
+        self.data = {
+            "user": None,
+            "tweets": None,
+            "analysis": None,
+        }
+    def set_status(self, status_str):
+        self.status = TASK_STATUS_MAP.get(status_str, TASK_STATUS_MAP["created"])
+
+    def serialize(self):
+        return json.dumps({
+            "status": self.status,
+            "data": self.data,
+        })
+
+    def deserialize(self, data):
+        data = json.loads(data)
+        self.status = data["status"]
+        self.data = data["data"]
 
 
 class Worker:
     received_task = {}
+    task = Task()
 
     def __init__(self):
         logger.info("Initializing worker...")
@@ -41,17 +65,10 @@ class Worker:
         print(self.scrape(username))
 
     def scrape(self, username):
+        logger.info(f"Scraping {username}...")
         return self.scraper.tweets(username)
 
 
 
 
 
-class Task:
-    def __init__(self):
-        self.status = TAST_STATUS_MAP["created"]
-        self.data = {
-            "user": None,
-            "tweets": None,
-            "analysis": None,
-        }
