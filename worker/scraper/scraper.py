@@ -1,8 +1,8 @@
 from ntscraper import Nitter
 
 class Scraper:
-    tweet_limit = 5
-    def __init__(self):
+    def __init__(self, tweet_limit=10):
+        self.tweet_limit = tweet_limit
         self.scraper = Nitter(instances=['https://nitter.esmailelbob.xyz'])
 
     def user(self, username):
