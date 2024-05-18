@@ -3,6 +3,8 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import pickle
 import tensorflow as tf
 import logging
+import pathlib
+
 
 
 logger = logging.getLogger("internal_analyzer_logger")
@@ -13,11 +15,11 @@ class Analyzer:
 
         # load model
         logger.info("   Loading model...")
-        self.model = load_model("model/model.keras")
+        self.model = load_model(pathlib.Path(__file__).parent / 'model/model.keras')
 
         # load json tokenizer
         logger.info("   Loading tokenizer...")
-        with open('model/tokenizer.json', 'r') as file:
+        with open(pathlib.Path(__file__).parent / 'model/tokenizer.json', 'r') as file:
             content = file.read()
             if not content:
                 logger.error("  Error loading tokenizer. File is empty. Exiting...")
