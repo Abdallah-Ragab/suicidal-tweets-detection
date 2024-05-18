@@ -13,15 +13,15 @@
     },
     "running_1": {
         "code": 3,
-        "message": "Scraping data"
+        "message": "Scraping tweets"
     },
     "running_2": {
         "code": 4,
-        "message": "Processing data"
+        "message": "Analyzing tweets"
     },
     "running_3": {
         "code": 5,
-        "message": "Saving data"
+        "message": "Saving results"
     },
     "success": {
         "code": 6,
