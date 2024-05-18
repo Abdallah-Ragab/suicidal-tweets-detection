@@ -1,0 +1,28 @@
+import os
+import pika
+
+
+HOST = os.getenv('RABBITMQ_HOST') or 'localhost'
+
+class QueueConnection:
+    def __init__(self, host=HOST):
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
+        self.channel = self.connection.channel()
+
+    def close(self):
+        self.connection.close()
+
+class TaskQueue:
+    def __init__(self, connection, queue_name):
+        self.name = queue_name
+        self.connection = connection
+        self.channel = self.connection.channel()
+        self.channel.queue_declare(queue=queue_name, durable=True)
+
+    def send(self, message):
+        self.channel.basic_publish(exchange='',
+                                   routing_key=self.name,
+                                   body=message,
+                                   properties=pika.BasicProperties(
+                                       delivery_mode=2,  # make message persistent
+                                   ))
