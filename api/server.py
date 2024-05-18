@@ -2,6 +2,7 @@
 from api.queue import TaskQueue, QueueConnection
 import fastapi
 import logging
+from task import Task
 
 app = fastapi.FastAPI()
 queue = TaskQueue(QueueConnection(), "tasks")
@@ -9,7 +10,7 @@ logger = logging.getLogger()
 
 @app.get("/task")
 def get_task(username : str):
-    queue.send(username)
-    logger.info(f"Task sent to worker for {username}")
-    return {"message": "Task sent to worker"}
-
+    task = Task()
+    task.data["user"] = username
+    json_task = task.serialize()
+    queue.send(json_task)
