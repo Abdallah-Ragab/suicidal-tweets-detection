@@ -13,17 +13,23 @@ class Worker:
     def __init__(self):
         self.connection = QueueConnection()
         self.queue = TaskQueue(self.connection, TASK_QUEUE_NAME, self.callback)
+        self.ready()
 
     def callback(self, ch, method, properties, body):
         self.received_task = {"channel": ch, "method": method, "properties": properties, "body": body}
-        # Work
-        self.finish_task()
+        self.do()
+        self.done()
 
     def ready(self):
         self.queue.listen()
 
-    def finish_task(self):
+    def done(self):
         self.received_task["channel"].basic_ack(delivery_tag=self.received_task["method"].delivery_tag)
+
+    def do(self):
+        task_data = self.received_task["body"].decode()
+        print(f"Received task: {task_data}")
+
 
 
 
